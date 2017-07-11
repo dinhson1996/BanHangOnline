@@ -1,10 +1,10 @@
 package com.vuongbachthu.shoponline.activity;
 
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,8 +14,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ViewFlipper;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 import com.vuongbachthu.shoponline.R;
+import com.vuongbachthu.shoponline.adapter.LoaispAdapter;
+import com.vuongbachthu.shoponline.model.Loaisp;
+import com.vuongbachthu.shoponline.until.CheckConnection;
+import com.vuongbachthu.shoponline.until.Server;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -28,16 +41,59 @@ public class MainActivity extends AppCompatActivity {
     ListView listViewManHinhChinh;
     DrawerLayout drawerLayout;
 
+    ArrayList<Loaisp> arrayLoaisp;
+    LoaispAdapter loaispAdapter;
+    int id_loaisp = 0;
+    String ten_loaisp = "";
+    String anh_loaisp = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Anhxa();
-        //ActionBar();
-        ActionViewFlipper();
+        Initially();
+        if (CheckConnection.haveNetworkConnection(getApplicationContext())){
+            //ActionBar();
+            ActionViewFlipper();
+            GetDuLieuLoaisp();
+        }else {
+            CheckConnection.ShowToast_Short(getApplicationContext(), "Ban hay kiem tra lai ket noi");
+            finish();
+        }
+    }
 
+    private void GetDuLieuLoaisp() {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Server.urlLoaisp, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null){
+                    for (int i = 0; i <response.length(); i++){
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            id_loaisp = jsonObject.getInt("id_loaisp");
+                            ten_loaisp = jsonObject.getString("ten_loaisp");
+                            anh_loaisp = jsonObject.getString("anh_loaisp");
 
+                            arrayLoaisp.add(new Loaisp(id_loaisp, ten_loaisp, anh_loaisp));
+                            loaispAdapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    arrayLoaisp.add(3, new Loaisp(0, "Lien he", "https://tinhte.cdnforo.com/store/2017/04/xengallery_photos_l_88909_f5f490678df3ae60c2d2375dc0b9d711.jpg"));
+                    arrayLoaisp.add(4, new Loaisp(0, "Thong tin", "https://tinhte.cdnforo.com/store/2017/04/xengallery_photos_l_88909_f5f490678df3ae60c2d2375dc0b9d711.jpg"));
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CheckConnection.ShowToast_Short(getApplicationContext(), error.toString());
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
     }
 
     private void ActionViewFlipper() {
@@ -74,13 +130,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void Anhxa() {
+    private void Initially() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_manhinhchinh);
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
         recyclerViewManHinhChinh = (RecyclerView) findViewById(R.id.recycler_view);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         listViewManHinhChinh = (ListView) findViewById(R.id.listview_manhinhchinh);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        arrayLoaisp = new ArrayList<>();
+        arrayLoaisp.add(0, new Loaisp(0, "Trang chu", "https://tinhte.cdnforo.com/store/2017/04/xengallery_photos_l_88909_f5f490678df3ae60c2d2375dc0b9d711.jpg"));
+
+        loaispAdapter = new LoaispAdapter(arrayLoaisp, getApplicationContext());
+        listViewManHinhChinh.setAdapter(loaispAdapter);
 
     }
 }
