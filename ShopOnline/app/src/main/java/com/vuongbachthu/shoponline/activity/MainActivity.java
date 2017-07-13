@@ -5,7 +5,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+<<<<<<< HEAD
 import android.support.v7.widget.GridLayoutManager;
+=======
+>>>>>>> 7f87c3cfeb28e784e5c0e9683551402dbf028001
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -22,12 +25,19 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 import com.vuongbachthu.shoponline.R;
+<<<<<<< HEAD
 import com.vuongbachthu.shoponline.activity.adapter.LoaispAdapter;
 import com.vuongbachthu.shoponline.activity.adapter.SanPhamAdapter;
 import com.vuongbachthu.shoponline.activity.model.LoaiSP;
 import com.vuongbachthu.shoponline.activity.model.SanPham;
 import com.vuongbachthu.shoponline.activity.ultil.CheckCollection;
 import com.vuongbachthu.shoponline.activity.ultil.Server;
+=======
+import com.vuongbachthu.shoponline.adapter.LoaispAdapter;
+import com.vuongbachthu.shoponline.model.Loaisp;
+import com.vuongbachthu.shoponline.until.CheckConnection;
+import com.vuongbachthu.shoponline.until.Server;
+>>>>>>> 7f87c3cfeb28e784e5c0e9683551402dbf028001
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,11 +61,18 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<SanPham> mangsp;
     SanPhamAdapter sanPhamAdapter;
 
+    ArrayList<Loaisp> arrayLoaisp;
+    LoaispAdapter loaispAdapter;
+    int id_loaisp = 0;
+    String ten_loaisp = "";
+    String anh_loaisp = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+<<<<<<< HEAD
         Anhxa();
       if(CheckCollection.haveNetWorkConnection(getApplicationContext())){
             ActionBar();
@@ -95,16 +112,52 @@ public class MainActivity extends AppCompatActivity {
                             mangsp.add(new SanPham(ID, Tensanpham, Giasanpham, Hinhanhsanpham, Motasanpham, IDsanpham));
                             sanPhamAdapter.notifyDataSetChanged();
 
+=======
+        Initially();
+        if (CheckConnection.haveNetworkConnection(getApplicationContext())){
+            //ActionBar();
+            ActionViewFlipper();
+            GetDuLieuLoaisp();
+        }else {
+            CheckConnection.ShowToast_Short(getApplicationContext(), "Ban hay kiem tra lai ket noi");
+            finish();
+        }
+    }
+
+    private void GetDuLieuLoaisp() {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Server.urlLoaisp, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null){
+                    for (int i = 0; i <response.length(); i++){
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            id_loaisp = jsonObject.getInt("id_loaisp");
+                            ten_loaisp = jsonObject.getString("ten_loaisp");
+                            anh_loaisp = jsonObject.getString("anh_loaisp");
+
+                            arrayLoaisp.add(new Loaisp(id_loaisp, ten_loaisp, anh_loaisp));
+                            loaispAdapter.notifyDataSetChanged();
+
+>>>>>>> 7f87c3cfeb28e784e5c0e9683551402dbf028001
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
+<<<<<<< HEAD
                 }
 
+=======
+                    arrayLoaisp.add(3, new Loaisp(0, "Lien he", "https://tinhte.cdnforo.com/store/2017/04/xengallery_photos_l_88909_f5f490678df3ae60c2d2375dc0b9d711.jpg"));
+                    arrayLoaisp.add(4, new Loaisp(0, "Thong tin", "https://tinhte.cdnforo.com/store/2017/04/xengallery_photos_l_88909_f5f490678df3ae60c2d2375dc0b9d711.jpg"));
+                }
+>>>>>>> 7f87c3cfeb28e784e5c0e9683551402dbf028001
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+<<<<<<< HEAD
 
             }
         });
@@ -142,6 +195,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         request.add(jsonArray);
+=======
+                CheckConnection.ShowToast_Short(getApplicationContext(), error.toString());
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+>>>>>>> 7f87c3cfeb28e784e5c0e9683551402dbf028001
     }
 
     private void ActionViewFlipper() {
@@ -177,13 +236,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void Anhxa() {
+    private void Initially() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_manhinhchinh);
         viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
         recyclerViewManHinhChinh = (RecyclerView) findViewById(R.id.recycler_view);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         listViewManHinhChinh = (ListView) findViewById(R.id.listview_manhinhchinh);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+<<<<<<< HEAD
         mangloaisp = new ArrayList<>();
         mangloaisp.add(0,new LoaiSP(0,"Trang Chủ","http://findicons.com/files/icons/1580/devine_icons_part_2/128/home.png"));
         loaispAdapter= new LoaispAdapter(mangloaisp,getApplicationContext());
@@ -194,6 +254,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewManHinhChinh.setHasFixedSize(true);
         recyclerViewManHinhChinh.setLayoutManager(new GridLayoutManager(getApplicationContext(),2));
         recyclerViewManHinhChinh.setAdapter(sanPhamAdapter);
+=======
+        arrayLoaisp = new ArrayList<>();
+        arrayLoaisp.add(0, new Loaisp(0, "Trang chu", "https://tinhte.cdnforo.com/store/2017/04/xengallery_photos_l_88909_f5f490678df3ae60c2d2375dc0b9d711.jpg"));
+
+        loaispAdapter = new LoaispAdapter(arrayLoaisp, getApplicationContext());
+        listViewManHinhChinh.setAdapter(loaispAdapter);
+>>>>>>> 7f87c3cfeb28e784e5c0e9683551402dbf028001
 
     }
 }
