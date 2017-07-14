@@ -6,5 +6,5 @@ package com.vuongbachthu.shoponline.until;
 
 public class Server {
     public static String localhost = "192.168.1.86:8080";
-    public static String urlLoaisp = "http://" + localhost + "/server/getloaisp.php";
+    public static String urlLoaisp = "http://" + localhost + "/server/getloaisanpham.php";
 }
