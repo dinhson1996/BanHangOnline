@@ -5,7 +5,7 @@ package com.vuongbachthu.shoponline.until;
  */
 
 public class Server {
-    public static String localhost = "192.168.1.86:8080";
+    public static String localhost = "10.22.208.79";
     public static String urlLoaisp = "http://" + localhost + "/server/main/getloaisp.php";
     public static String url_img = "http://" + localhost;
     public static String url_sanphammoinhat = "http://" + localhost + "/server/main/getsanphammoinhat.php";

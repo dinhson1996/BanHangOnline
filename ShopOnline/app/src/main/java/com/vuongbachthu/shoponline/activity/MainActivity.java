@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                             id_loaisp = jsonObject.getInt("id_loaisp");
                             ten_loaisp = jsonObject.getString("ten_loaisp");
                             anh_loaisp = jsonObject.getString("anh_loaisp");
-
                             mangLoaisp.add(new Loaisp(id_loaisp, ten_loaisp, Server.url_img + anh_loaisp));
                             loaispAdapter.notifyDataSetChanged();
 
